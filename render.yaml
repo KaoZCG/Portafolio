@@ -9,7 +9,7 @@ services:
     envVars:
       # Configuración básica de Laravel
       - key: APP_ENV
-        value: production
+        value: local
       - key: APP_DEBUG
         value: "true"
       - key: APP_KEY
