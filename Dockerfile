@@ -1,26 +1,14 @@
 # Build stage
 FROM composer:2.7 as build
 
-# Instalar Node.js 20 y npm (versión optimizada)
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ca-certificates \
-        curl \
-        gnupg \
-        && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
-    node -v && npm -v  # Verificación
-
 WORKDIR /app
 COPY . .
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-pdo_pgsql
-RUN npm install && npm run build
 
 # Production stage
 FROM php:8.2-apache
 
-# Install dependencies
+# Instalar dependencias solo para PHP
 RUN apt-get update && \
     apt-get install -y \
         libpq-dev \
@@ -40,18 +28,16 @@ RUN apt-get update && \
         && \
     a2enmod rewrite
 
-# Configure Apache (¡ahora apunta directamente a la raíz!)
+# Configurar Apache
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 
-# Copy application
+# Copiar la aplicación
 COPY --from=build /app /var/www/html
 
-# Permissions
+# Permisos y optimizaciones
 RUN mkdir -p storage/framework/{cache,sessions,views} && \
     chown -R www-data:www-data storage bootstrap/cache && \
     chmod -R 775 storage bootstrap/cache
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s \
-    CMD curl -f http://localhost/ || exit 1
+USER www-data
