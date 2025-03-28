@@ -1,23 +1,25 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "Dockerfile",
-      "use": "docker"
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
     }
-  ],
+  },
   "routes": [
     {
       "src": "/build/(.*)",
-      "dest": "/public/build/$1"
+      "dest": "/public/build/$1",
+      "continue": true
     },
     {
       "src": "/(.*\\.(ico|png|jpg|jpeg|gif|svg|css|js|json|txt|xml|webmanifest))",
-      "dest": "/public/$1"
+      "dest": "/public/$1",
+      "continue": true
     },
     {
       "src": "/(.*)",
-      "dest": "/index.php"
+      "dest": "/public/index.php",
+      "continue": true
     }
   ]
 }

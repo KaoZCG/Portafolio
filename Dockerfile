@@ -43,6 +43,11 @@ WORKDIR /var/www/html
 # 4. Copiar aplicación
 COPY --from=build /app .
 
+RUN mkdir -p public && \
+    cp -r public/. /var/www/html/public/ && \
+    chown -R www-data:www-data /var/www/html/public && \
+    chmod -R 775 /var/www/html/public
+    
 # 5. Configurar permisos y directorios necesarios
 RUN mkdir -p storage/framework/{cache,sessions,views} && \
     chown -R www-data:www-data storage bootstrap/cache && \
