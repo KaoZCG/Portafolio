@@ -20,18 +20,18 @@ RUN apt-get update && \
         && \
     a2enmod rewrite
 
-# Configurar directorio de documentos de Apache
-ENV APACHE_DOCUMENT_ROOT /var/www/html/landing-page-portafolio/public
+# Configurar directorio de documentos de Apache (ahora apunta directamente a /public)
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
     sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Copiar la aplicación
-COPY --from=build /app /var/www/html/landing-page-portafolio
+# Copiar la aplicación (ahora a la raíz)
+COPY --from=build /app /var/www/html
 
 # Configurar permisos y directorios necesarios
-RUN mkdir -p /var/www/html/landing-page-portafolio/storage/framework/{cache,sessions,views} && \
-    chown -R www-data:www-data /var/www/html/landing-page-portafolio && \
-    chmod -R 775 /var/www/html/landing-page-portafolio/storage /var/www/html/landing-page-portafolio/bootstrap/cache
+RUN mkdir -p /var/www/html/storage/framework/{cache,sessions,views} && \
+    chown -R www-data:www-data /var/www/html && \
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Configurar health check
 HEALTHCHECK --interval=30s --timeout=3s \
