@@ -2,37 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.php",
-      "use": "vercel-php@0.7.0"
+      "src": "Dockerfile",
+      "use": "@vercel/docker"
     }
   ],
   "routes": [
     {
-      "src": "/build/assets/(.*)",
-      "dest": "public/build/assets/$1"
-    },
-    {
-      "src": "/(css|js|images|fonts|favicon)/(.*)",
-      "dest": "public/$1/$2"
-    },
-    {
-      "src": "/(.*)\\.(ico|png|jpg|jpeg|gif|svg|css|js|json|txt|xml|webmanifest)",
-      "dest": "public/$1.$2"
+      "src": "/build/(.*)",
+      "dest": "/public/build/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/api/index.php"
+      "dest": "/index.php"
     }
-  ],
-  "env": {
-    "APP_ENV": "production",
-    "APP_DEBUG": "false",
-    "APP_URL": "https://${VERCEL_URL}",
-    "ASSET_URL": "https://${VERCEL_URL}"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  }
+  ]
 }
