@@ -7,32 +7,41 @@ RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-pd
 # Etapa de producción
 FROM php:8.2-apache
 
-# Instalar dependencias y configurar Apache
+# Instalar dependencias
 RUN apt-get update && \
     apt-get install -y \
         libpq-dev \
-        git \
-        unzip \
+        libzip-dev \
+        libpng-dev \
+        libonig-dev \
+        libxml2-dev \
         && \
     docker-php-ext-install \
         pdo \
         pdo_pgsql \
+        zip \
+        gd \
+        mbstring \
+        xml \
+        bcmath \
         && \
     a2enmod rewrite
 
-# Configurar directorio de documentos de Apache (ahora apunta directamente a /public)
+# Configurar Apache
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
     sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Copiar la aplicación (ahora a la raíz)
+# Copiar la aplicación
 COPY --from=build /app /var/www/html
 
-# Configurar permisos y directorios necesarios
-RUN mkdir -p /var/www/html/storage/framework/{cache,sessions,views} && \
-    chown -R www-data:www-data /var/www/html && \
-    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Configurar permisos
+RUN mkdir -p storage/framework/{cache,sessions,views} && \
+    chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
 
-# Configurar health check
-HEALTHCHECK --interval=30s --timeout=3s \
-    CMD curl -f http://localhost/ || exit 1
+# Optimizaciones para producción
+USER www-data
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
