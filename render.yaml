@@ -11,13 +11,13 @@ services:
       - key: APP_NAME
         value: "Portafolio"
       - key: APP_ENV
-        value: local
+        value: production
       - key: APP_DEBUG
         value: "true"
       - key: APP_KEY
         value: "base64:WuZGLZjdMGsVb4EJ7oon//7aOutQa3J+5n94WkOg+WE="
       - key: APP_URL
-        value: "http://localhost"
+        value: "https://portafolio-izpp.onrender.com/"
 
       - key: DB_CONNECTION
         value: pgsql
