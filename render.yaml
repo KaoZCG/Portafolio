@@ -1,0 +1,79 @@
+services:
+  - type: web
+    name: laravel-app
+    runtime: docker
+    env: docker
+    plan: free  # O "starter" si necesitas más recursos
+    region: ohio  # O la región más cercana a ti
+    buildCommand: docker build -t laravel-app .
+    startCommand: "a2enmod rewrite && apache2-foreground"
+    envVars:
+      # Configuración básica de Laravel
+      - key: APP_NAME
+        value: "Laravel"
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        value: "base64:WuZGLZjdMGsVb4EJ7oon//7aOutQa3J+5n94WkOg+WE="
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        value: "https://tu-app.onrender.com"  # Cambiar por tu URL real
+
+      # Configuración de internacionalización
+      - key: APP_LOCALE
+        value: "en"
+      - key: APP_FALLBACK_LOCALE
+        value: "en"
+      - key: APP_FAKER_LOCALE
+        value: "en_US"
+
+      # Configuración de PostgreSQL (Supabase)
+      - key: DB_CONNECTION
+        value: "pgsql"
+      - key: DB_HOST
+        value: "db.nzlqddfsbksqwbjebjgy.supabase.co"
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_DATABASE
+        value: "postgres"
+      - key: DB_USERNAME
+        value: "postgres"
+      - key: DB_PASSWORD
+        value: "ysajBkptb50OgKB7"
+      - key: DATABASE_URL
+        value: "postgres://postgres:ysajBkptb50OgKB7@db.nzlqddfsbksqwbjebjgy.supabase.co:5432/postgres?sslmode=require"
+
+      # Configuración de Supabase
+      - key: SUPABASE_URL
+        value: "https://nzlqddfsbksqwbjebjgy.supabase.co"
+      - key: SUPABASE_KEY
+        value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56bHFkZGZzYmtzcXdiamViamd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMxMTk0MDMsImV4cCI6MjA1ODY5NTQwM30.n_udq1aa1sj3R2duRI-L-S72vIgBolgFm5oW8QJ07MU"
+      - key: SUPABASE_JWT_SECRET
+        value: "/XX+UdMLO6DiSFhvlD6eSoTkY/8afinLwptYYaYIPgCcOYpREJt6bdfCkRvh9qTlbAFAK6AAuvHrRBN3jpc//w=="
+
+      # Configuración de sesión y cache
+      - key: SESSION_DRIVER
+        value: "file"
+      - key: SESSION_LIFETIME
+        value: "120"
+      - key: FILESYSTEM_DISK
+        value: "local"
+      - key: CACHE_STORE
+        value: "file"
+
+      # Configuración de email
+      - key: MAIL_MAILER
+        value: "log"
+      - key: MAIL_FROM_ADDRESS
+        value: "hello@example.com"
+      - key: MAIL_FROM_NAME
+        value: "Laravel"
+
+      # Configuración de Vite
+      - key: VITE_APP_NAME
+        value: "Laravel"
+
+    # Health check path
+    healthCheckPath: /
+    healthCheckInitialDelay: 60
