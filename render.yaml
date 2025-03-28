@@ -8,6 +8,8 @@ services:
     startCommand: "a2enmod rewrite && apache2-foreground"
     envVars:
       # Laravel config
+      - key: APP_NAME
+        value: "Portafolio"
       - key: APP_ENV
         value: local
       - key: APP_DEBUG
