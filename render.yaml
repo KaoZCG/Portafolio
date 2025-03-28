@@ -31,7 +31,7 @@ services:
       - key: DB_PASSWORD
         sync: false  # Configurar manualmente en Render con el valor: mpg1U3mjzMim8gBiIRO1uFFAnEYOsCAX
       - key: DATABASE_URL
-        value: "postgresql://portafolio_user:${DB_PASSWORD}@dpg-cvjhfgh5pdvs73ca0ur0-a.oregon-postgres.render.com:5432/portafolio_4nq5"
+        value: "postgresql://portafolio_user:mpg1U3mjzMim8gBiIRO1uFFAnEYOsCAX@dpg-cvjhfgh5pdvs73ca0ur0-a/portafolio_4nq5"
 
       # Configuración adicional recomendada
       - key: LOG_CHANNEL
