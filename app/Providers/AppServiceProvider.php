@@ -19,6 +19,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Configurar paths para Vercel
+        if (isset($_ENV['VERCEL'])) {
+            config([
+                'view.compiled' => '/tmp/storage/framework/views',
+                'cache.stores.file.path' => '/tmp/storage/framework/cache',
+                'session.files' => '/tmp/storage/framework/sessions',
+            ]);
+        }
     }
 }

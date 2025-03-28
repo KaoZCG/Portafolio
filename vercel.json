@@ -1,24 +1,43 @@
 {
-    "version": 2,
-    "framework": null,
-    "functions": {
-      "api/*.php": {
-        "runtime": "vercel-php@0.6.0"
-      }
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.php",
+      "use": "@vercel/php"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/build/assets/(.*)",
+      "dest": "public/build/assets/$1"
     },
-    "routes": [
-      { "src": "/(css|js|images|fonts|favicon)/(.*)", "dest": "public/$1/$2" },
-      { "src": "/(.*)\\.(.+)", "dest": "public/$1.$2" },
-      { "src": "/(.*)", "dest": "/api/index.php" }
-    ],
+    {
+      "src": "/(css|js|images|fonts|favicon)/(.*)",
+      "dest": "public/$1/$2"
+    },
+    {
+      "src": "/(.*)\\.(ico|png|jpg|jpeg|gif|svg|css|js|json|txt|xml|webmanifest)",
+      "dest": "public/$1.$2"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
+    }
+  ],
+  "env": {
+    "APP_ENV": "production",
+    "APP_DEBUG": "false",
+    "APP_URL": "https://${VERCEL_URL}",
+    "ASSET_URL": "https://${VERCEL_URL}",
+    "LOG_CHANNEL": "stderr",
+    "VIEW_COMPILED_PATH": "/tmp/storage/framework/views"
+  },
+  "build": {
     "env": {
-      "APP_NAME": "Laravel",
-      "APP_ENV": "production",
-      "APP_DEBUG": "false",
-      "APP_URL": "${VERCEL_URL}",
-      "ASSET_URL": "${VERCEL_URL}"
-    },
-    "buildCommand": "composer install --no-dev && php artisan config:cache && php artisan route:cache && npm ci && npm run build",
-    "outputDirectory": "public",
-    "installCommand": "composer install && npm install"
-  }
+      "NODE_ENV": "production"
+    }
+  },
+  "buildCommand": "composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache && npm install && npm run build",
+  "installCommand": "composer install --no-interaction --prefer-dist && npm install",
+  "outputDirectory": "public"
+}
