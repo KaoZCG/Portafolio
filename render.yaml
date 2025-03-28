@@ -12,7 +12,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        sync: false  # Generar nuevo con: php artisan key:generate --show
+        value: "base64:WuZGLZjdMGsVb4EJ7oon//7aOutQa3J+5n94WkOg+WE="
       - key: APP_URL
         value: "https://portafolio-izpp.onrender.com"
       - key: DB_CONNECTION
@@ -26,6 +26,6 @@ services:
       - key: DB_USERNAME
         value: postgres
       - key: DB_PASSWORD
-        sync: false  # Setear manualmente en Render
+        sync: false  # Configurar manualmente en Render
     healthCheckPath: /
     healthCheckInitialDelay: 60

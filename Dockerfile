@@ -1,5 +1,15 @@
 # Build stage
 FROM composer:2.7 as build
+
+# Instalar Node.js 20 y npm
+RUN apt-get update && \
+    apt-get install -y ca-certificates curl gnupg && \
+    mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
+    apt-get update && \
+    apt-get install -y nodejs
+
 WORKDIR /app
 COPY . .
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-pdo_pgsql
@@ -28,16 +38,18 @@ RUN apt-get update && \
         && \
     a2enmod rewrite
 
-# Configure Apache
+# Configure Apache (¡ahora apunta directamente a la raíz!)
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 
 # Copy application
 COPY --from=build /app /var/www/html
 
-# Permissions and optimizations
+# Permissions
 RUN mkdir -p storage/framework/{cache,sessions,views} && \
     chown -R www-data:www-data storage bootstrap/cache && \
     chmod -R 775 storage bootstrap/cache
 
-USER www-data
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD curl -f http://localhost/ || exit 1
