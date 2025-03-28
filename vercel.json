@@ -3,7 +3,7 @@
   "builds": [
     {
       "src": "api/index.php",
-      "use": "@vercel/php"
+      "use": "vercel-php@0.6.0"
     }
   ],
   "routes": [
@@ -28,16 +28,11 @@
     "APP_ENV": "production",
     "APP_DEBUG": "false",
     "APP_URL": "https://${VERCEL_URL}",
-    "ASSET_URL": "https://${VERCEL_URL}",
-    "LOG_CHANNEL": "stderr",
-    "VIEW_COMPILED_PATH": "/tmp/storage/framework/views"
+    "ASSET_URL": "https://${VERCEL_URL}"
   },
   "build": {
     "env": {
       "NODE_ENV": "production"
     }
-  },
-  "buildCommand": "composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader && php artisan config:cache && php artisan route:cache && php artisan view:cache && npm install && npm run build",
-  "installCommand": "composer install --no-interaction --prefer-dist && npm install",
-  "outputDirectory": "public"
+  }
 }
