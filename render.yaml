@@ -10,29 +10,16 @@ services:
       # Laravel config
       - key: APP_NAME
         value: "Portafolio"
-      - key: APP_ENV
-        value: production
-      - key: APP_DEBUG
-        value: "true"
-      - key: APP_KEY
-        value: "base64:WuZGLZjdMGsVb4EJ7oon//7aOutQa3J+5n94WkOg+WE="
       - key: APP_URL
         value: "https://portafolio-izpp.onrender.com/"
-
       - key: DB_CONNECTION
         value: pgsql
-      - key: DB_HOST
-        value: "dpg-cvjhfgh5pdvs73ca0ur0-a"
       - key: DB_PORT
         value: "5432"
       - key: DB_DATABASE
         value: "portafolio_4nq5"
       - key: DB_USERNAME
         value: "portafolio_user"
-      - key: DB_PASSWORD
-        sync: false
-      - key: DATABASE_URL
-        value: "postgresql://portafolio_user:mpg1U3mjzMim8gBiIRO1uFFAnEYOsCAX@dpg-cvjhfgh5pdvs73ca0ur0-a/portafolio_4nq5"
     # Health check
     healthCheckPath: /
     healthCheckInitialDelay: 200
