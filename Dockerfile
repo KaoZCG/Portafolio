@@ -40,10 +40,10 @@ RUN mkdir -p storage/framework/{cache,sessions,views} && \
     chown -R www-data:www-data storage bootstrap/cache && \
     chmod -R 775 storage bootstrap/cache
 
+USER root
+RUN ln -sf /dev/stderr /var/www/html/storage/logs/laravel.log
+USER www-data
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s \
     CMD curl -f http://localhost/ || exit 1
-
-# Migrations (ejecutar SOLO si la DB está configurada)
-USER www-data
-# RUN php artisan migrate --force  # Elimina o comenta esta línea
