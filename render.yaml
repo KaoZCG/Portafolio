@@ -3,10 +3,11 @@ services:
     name: portafolio
     runtime: docker
     plan: free
-    region: ohio
+    region: oregon  # Debe coincidir con la región de tu base de datos
     buildCommand: docker build -t laravel-app .
     startCommand: "a2enmod rewrite && apache2-foreground"
     envVars:
+      # Configuración básica de Laravel
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
@@ -15,17 +16,31 @@ services:
         value: "base64:WuZGLZjdMGsVb4EJ7oon//7aOutQa3J+5n94WkOg+WE="
       - key: APP_URL
         value: "https://portafolio-izpp.onrender.com"
+
+      # Configuración de PostgreSQL (Render)
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        value: "db.nzlqddfsbksqwbjebjgy.supabase.co"
+        value: "dpg-cvjhfgh5pdvs73ca0ur0-a.oregon-postgres.render.com"  # Usar el FQDN completo
       - key: DB_PORT
         value: "5432"
       - key: DB_DATABASE
-        value: postgres
+        value: "portafolio_4nq5"
       - key: DB_USERNAME
-        value: postgres
+        value: "portafolio_user"
       - key: DB_PASSWORD
-        sync: false  # Configurar manualmente en Render
+        sync: false  # Configurar manualmente en Render con el valor: mpg1U3mjzMim8gBiIRO1uFFAnEYOsCAX
+      - key: DATABASE_URL
+        value: "postgresql://portafolio_user:${DB_PASSWORD}@dpg-cvjhfgh5pdvs73ca0ur0-a.oregon-postgres.render.com:5432/portafolio_4nq5"
+
+      # Configuración adicional recomendada
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_DRIVER
+        value: file
+
+    # Health check
     healthCheckPath: /
     healthCheckInitialDelay: 60

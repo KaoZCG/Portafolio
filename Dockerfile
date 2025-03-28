@@ -44,5 +44,6 @@ RUN mkdir -p storage/framework/{cache,sessions,views} && \
 HEALTHCHECK --interval=30s --timeout=3s \
     CMD curl -f http://localhost/ || exit 1
 
+# Migrations (ejecutar SOLO si la DB está configurada)
 USER www-data
-RUN php artisan migrate --force
+# RUN php artisan migrate --force  # Elimina o comenta esta línea
