@@ -1,37 +1,25 @@
-# Etapa de construcción
 FROM composer:2.7 as build
-
 WORKDIR /app
 COPY . .
-
-# Ignorar temporalmente la extensión pdo_pgsql durante la instalación de Composer
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-pdo_pgsql
 
-# Etapa de producción
 FROM php:8.2-apache
 
-# Instalar dependencias para PostgreSQL
+# Instalar dependencias
 RUN apt-get update && \
-    apt-get install -y \
-        libpq-dev \
-        postgresql-client \
-        && \
-    docker-php-ext-install \
-        pdo \
-        pdo_pgsql \
-        && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y libpq-dev && \
+    docker-php-ext-install pdo pdo_pgsql && \
+    a2enmod rewrite
 
-# Configurar Apache
-RUN a2enmod rewrite
-COPY --from=build /app /var/www/html
-WORKDIR /var/www/html
+# Configurar Apache para la ruta personalizada
+ENV APACHE_DOCUMENT_ROOT /var/www/html/landing-page-portafolio/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
+    sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Copiar la aplicación
+COPY --from=build /app /var/www/html/landing-page-portafolio
 
 # Configurar permisos
-RUN chown -R www-data:www-data storage bootstrap/cache
-RUN chmod -R 775 storage bootstrap/cache
-
-# Variables de entorno (se sobrescribirán con las de Render)
-ENV APP_ENV=production
-ENV APP_DEBUG=false
+RUN chown -R www-data:www-data /var/www/html/landing-page-portafolio && \
+    chmod -R 775 /var/www/html/landing-page-portafolio/storage && \
+    chmod -R 775 /var/www/html/landing-page-portafolio/bootstrap/cache
