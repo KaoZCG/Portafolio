@@ -1,19 +1,19 @@
-# Etapa de construcción (build)
+# Etapa de construcción
 FROM composer:2.7 as build
 
 WORKDIR /app
 
-# Copiar solo los archivos necesarios para instalar dependencias
+# 1. Copiar solo lo necesario para composer
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
-# Copiar el resto de la aplicación
+# 2. Copiar el resto
 COPY . .
 
 # Etapa de producción
 FROM php:8.2-apache-bullseye
 
-# Instalar extensiones PHP necesarias
+# 1. Instalar dependencias del sistema
 RUN apt-get update && \
     apt-get install -y \
         libzip-dev \
@@ -31,22 +31,25 @@ RUN apt-get update && \
         xml \
         bcmath
 
-# Configurar Apache
+# 2. Configurar Apache
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-RUN a2enmod rewrite
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
+    sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf && \
+    a2enmod rewrite
 
+# 3. Configurar directorio de trabajo
 WORKDIR /var/www/html
 
-# Copiar la aplicación desde la etapa de construcción
+# 4. Copiar aplicación
 COPY --from=build /app .
 
-# Configurar permisos
-RUN chown -R www-data:www-data /var/www/html/storage
-RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
-RUN chmod -R 775 storage bootstrap/cache
+# 5. Configurar permisos y directorios necesarios
+RUN mkdir -p storage/framework/{cache,sessions,views} && \
+    chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
 
-# Variables de entorno (se sobrescribirán con las de Vercel)
-ENV APP_ENV production
-ENV APP_DEBUG false
+# 6. Optimizaciones para producción (ejecutar como www-data)
+USER www-data
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
