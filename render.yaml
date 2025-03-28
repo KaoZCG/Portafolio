@@ -15,7 +15,7 @@ services:
       - key: APP_KEY
         value: "base64:WuZGLZjdMGsVb4EJ7oon//7aOutQa3J+5n94WkOg+WE="
       - key: APP_URL
-        value: "https://portafolio-izpp.onrender.com"
+        value: "http://localhost"
 
       # Configuración de PostgreSQL (Render)
       - key: DB_CONNECTION
