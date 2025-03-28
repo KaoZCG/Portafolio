@@ -32,15 +32,6 @@ services:
         sync: false  # Configurar manualmente en Render con el valor: mpg1U3mjzMim8gBiIRO1uFFAnEYOsCAX
       - key: DATABASE_URL
         value: "postgresql://portafolio_user:mpg1U3mjzMim8gBiIRO1uFFAnEYOsCAX@dpg-cvjhfgh5pdvs73ca0ur0-a/portafolio_4nq5"
-
-      # Configuración adicional recomendada
-      - key: LOG_CHANNEL
-        value: stderr
-      - key: SESSION_DRIVER
-        value: database
-      - key: CACHE_DRIVER
-        value: file
-
     # Health check
     healthCheckPath: /
-    healthCheckInitialDelay: 60
+    healthCheckInitialDelay: 200
