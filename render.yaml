@@ -7,23 +7,18 @@ services:
     buildCommand: docker build -t laravel-app .
     startCommand: "a2enmod rewrite && apache2-foreground"
     envVars:
-      # Configuración básica
-      - key: APP_NAME
-        value: "Portafolio"
       - key: APP_ENV
         value: production
-      - key: APP_KEY
-        value: "base64:WuZGLZjdMGsVb4EJ7oon//7aOutQa3J+5n94WkOg+WE="
       - key: APP_DEBUG
         value: "false"
+      - key: APP_KEY
+        sync: false  # Generar nuevo con: php artisan key:generate --show
       - key: APP_URL
         value: "https://portafolio-izpp.onrender.com"
-      
-      # Base de datos PostgreSQL (Supabase)
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        value: db.nzlqddfsbksqwbjebjgy.supabase.co
+        value: "db.nzlqddfsbksqwbjebjgy.supabase.co"
       - key: DB_PORT
         value: "5432"
       - key: DB_DATABASE
@@ -31,19 +26,6 @@ services:
       - key: DB_USERNAME
         value: postgres
       - key: DB_PASSWORD
-        sync: false  # Configurar manualmente en Render
-      - key: DATABASE_URL
-        value: postgres://postgres:${DB_PASSWORD}@db.nzlqddfsbksqwbjebjgy.supabase.co:5432/postgres?sslmode=require
-
-      # Configuración adicional
-      - key: LOG_CHANNEL
-        value: stderr
-      - key: SESSION_DRIVER
-        value: file
-      - key: FILESYSTEM_DISK
-        value: public
-      - key: VITE_APP_NAME
-        value: "Portafolio"
-
+        sync: false  # Setear manualmente en Render
     healthCheckPath: /
     healthCheckInitialDelay: 60

@@ -1,13 +1,14 @@
-# Etapa de construcción
+# Build stage
 FROM composer:2.7 as build
 WORKDIR /app
 COPY . .
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-pdo_pgsql
+RUN npm install && npm run build
 
-# Etapa de producción
+# Production stage
 FROM php:8.2-apache
 
-# Instalar dependencias
+# Install dependencies
 RUN apt-get update && \
     apt-get install -y \
         libpq-dev \
@@ -27,21 +28,16 @@ RUN apt-get update && \
         && \
     a2enmod rewrite
 
-# Configurar Apache
+# Configure Apache
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
-    sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 
-# Copiar la aplicación
+# Copy application
 COPY --from=build /app /var/www/html
 
-# Configurar permisos
+# Permissions and optimizations
 RUN mkdir -p storage/framework/{cache,sessions,views} && \
     chown -R www-data:www-data storage bootstrap/cache && \
     chmod -R 775 storage bootstrap/cache
 
-# Optimizaciones para producción
 USER www-data
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
