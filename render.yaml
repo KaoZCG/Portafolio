@@ -18,7 +18,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_URL
-        value: "https://tu-app.onrender.com"  # Cambiar por tu URL real
+        value: "https://portafolio-izpp.onrender.com/"
 
       # Configuración de internacionalización
       - key: APP_LOCALE
