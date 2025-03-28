@@ -3,11 +3,11 @@ services:
     name: portafolio
     runtime: docker
     plan: free
-    region: oregon  # Debe coincidir con la región de tu base de datos
+    region: oregon
     buildCommand: docker build -t laravel-app .
     startCommand: "a2enmod rewrite && apache2-foreground"
     envVars:
-      # Configuración básica de Laravel
+      # Laravel config
       - key: APP_ENV
         value: local
       - key: APP_DEBUG
@@ -17,11 +17,10 @@ services:
       - key: APP_URL
         value: "http://localhost"
 
-      # Configuración de PostgreSQL (Render)
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        value: "dpg-cvjhfgh5pdvs73ca0ur0-a.oregon-postgres.render.com"  # Usar el FQDN completo
+        value: "dpg-cvjhfgh5pdvs73ca0ur0-a"
       - key: DB_PORT
         value: "5432"
       - key: DB_DATABASE
@@ -29,7 +28,7 @@ services:
       - key: DB_USERNAME
         value: "portafolio_user"
       - key: DB_PASSWORD
-        sync: false  # Configurar manualmente en Render con el valor: mpg1U3mjzMim8gBiIRO1uFFAnEYOsCAX
+        sync: false
       - key: DATABASE_URL
         value: "postgresql://portafolio_user:mpg1U3mjzMim8gBiIRO1uFFAnEYOsCAX@dpg-cvjhfgh5pdvs73ca0ur0-a/portafolio_4nq5"
     # Health check
