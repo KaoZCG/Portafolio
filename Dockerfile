@@ -8,7 +8,7 @@ RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-pd
 # Production stage
 FROM php:8.2-apache
 
-# Instalar dependencias solo para PHP
+# Install PHP extensions
 RUN apt-get update && \
     apt-get install -y \
         libpq-dev \
@@ -28,16 +28,21 @@ RUN apt-get update && \
         && \
     a2enmod rewrite
 
-# Configurar Apache
+# Configure Apache
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 
-# Copiar la aplicación
+# Copy application
 COPY --from=build /app /var/www/html
 
-# Permisos y optimizaciones
+# Permissions
 RUN mkdir -p storage/framework/{cache,sessions,views} && \
     chown -R www-data:www-data storage bootstrap/cache && \
     chmod -R 775 storage bootstrap/cache
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD curl -f http://localhost/ || exit 1
+
 USER www-data
+RUN php artisan migrate --force
