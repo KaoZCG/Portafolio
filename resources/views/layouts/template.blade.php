@@ -184,7 +184,7 @@
                         <div class="mb-2 icon-img"><img src="https://static-00.iconduck.com/assets.00/docker-icon-256x256-civ8fayy.png" alt=""></div>
                         <h3 class="h4 mb-2">Docker</h3>
                         <p> Principiante </p>
-                        <p class="text-muted mb-0">No más onboarding para QA (se supone😅). Utilicé docker para el deploy de este portafolio en Render</p>
+                        <p class="text-muted mb-0">No más QA deployment engorrosos (se supone😅). Utilicé docker para el deploy de este portafolio en Render</p>
                     </div>
                 </div>
             </div>
